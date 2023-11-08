@@ -1,4 +1,4 @@
-package br.com.bluelobster.vacancy_management.modules.canditate;
+package br.com.bluelobster.vacancy_management.modules.candidate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import lombok.Data;
 
 @Data
 @Entity(name = "candidate")
-public class CanditateEntity {
+public class CandidateEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
