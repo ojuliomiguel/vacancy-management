@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bluelobster.vacancy_management.modules.candidate.CandidateEntity;
-import br.com.bluelobster.vacancy_management.modules.candidate.CandidateRepository;
-import br.com.bluelobster.vacancy_management.modules.exceptions.UserAlreadyExistsException;
+import br.com.bluelobster.vacancy_management.modules.candidate.useCases.CreateCanditateUseCase;
 import jakarta.validation.Valid;
 
 @RestController
@@ -18,17 +17,16 @@ import jakarta.validation.Valid;
 public class CandidateController {
 
   @Autowired
-  private CandidateRepository candidateRepository;
+  private CreateCanditateUseCase createCanditateUseCase;
 
   @PostMapping("/")
-  public ResponseEntity<CandidateEntity> create(@Valid @RequestBody CandidateEntity candidateEntity) {
-
-    this.candidateRepository
-      .findByUsernameOrEmail(candidateEntity.getUsername(), candidateEntity.getEmail())
-      .ifPresent(user -> { throw new UserAlreadyExistsException(); });
-
-    this.candidateRepository.save(candidateEntity);
-
-    return new ResponseEntity<>(candidateEntity, HttpStatus.CREATED);
+  public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
+    try {
+      var candidate = this.createCanditateUseCase.execute(candidateEntity);
+      return ResponseEntity.created(null).body(candidate);
+    } catch (Exception e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+    
   }
 }
