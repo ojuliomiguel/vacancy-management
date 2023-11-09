@@ -14,8 +14,8 @@ import br.com.bluelobster.vacancy_management.modules.exceptions.UserAlreadyExist
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/canditate")
-public class CanditadeController {
+@RequestMapping("/candidate")
+public class CandidateController {
 
   @Autowired
   private CandidateRepository candidateRepository;
