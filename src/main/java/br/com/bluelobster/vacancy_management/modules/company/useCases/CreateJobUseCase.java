@@ -1,5 +1,6 @@
 package br.com.bluelobster.vacancy_management.modules.company.useCases;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.bluelobster.vacancy_management.modules.company.entities.JobEntity;
@@ -7,6 +8,8 @@ import br.com.bluelobster.vacancy_management.modules.company.repositories.JobRep
 
 @Service
 public class CreateJobUseCase {
+
+  @Autowired
   private JobRepository jobRepository;
 
   public JobEntity execute(JobEntity jobEntity) {
