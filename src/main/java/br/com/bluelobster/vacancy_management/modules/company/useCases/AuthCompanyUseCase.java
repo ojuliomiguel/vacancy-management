@@ -20,6 +20,10 @@ import br.com.bluelobster.vacancy_management.modules.company.repositories.Compan
 @Service
 public class AuthCompanyUseCase {
 
+  @Value("${security.jwt.issuer}")
+  private String jwtIssuer;
+
+
   @Value("${security.token.secret}")
   private String secretKey;
 
@@ -44,7 +48,7 @@ public class AuthCompanyUseCase {
 
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-    var token = JWT.create().withIssuer("bluelobster")
+    var token = JWT.create().withIssuer(jwtIssuer)
       .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
       .withSubject(company.getId().toString()).sign(algorithm);
     return token;

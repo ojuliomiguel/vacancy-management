@@ -23,6 +23,9 @@ public class AuthCandidateUseCase {
   @Value("${security.token.secret.candidate}")
   private String secretKey;
 
+  @Value("${security.jwt.issuer}")
+  private String jwtIssuer;
+
   @Autowired
   private CandidateRepository candidateRepository;
 
@@ -47,7 +50,7 @@ public class AuthCandidateUseCase {
 
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     var token = JWT.create()
-      .withIssuer("bluelobster")
+      .withIssuer(jwtIssuer)
       .withSubject(candidate.getId().toString())
       .withClaim("roles", Arrays.asList("candidate"))
       .withExpiresAt(Instant.now().plus(Duration.ofMinutes(30)))
