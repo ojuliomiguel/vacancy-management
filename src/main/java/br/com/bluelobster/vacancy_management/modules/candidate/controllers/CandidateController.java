@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.bluelobster.vacancy_management.modules.candidate.CandidateEntity;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.CreateCanditateUseCase;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/candidate")
