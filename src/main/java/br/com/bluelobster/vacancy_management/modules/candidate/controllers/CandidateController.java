@@ -1,5 +1,6 @@
 package br.com.bluelobster.vacancy_management.modules.candidate.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bluelobster.vacancy_management.modules.candidate.CandidateEntity;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.CreateCanditateUseCase;
+import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ListJobsByFilterUseCase;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
+import br.com.bluelobster.vacancy_management.modules.company.entities.JobEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +31,9 @@ public class CandidateController {
 
   @Autowired
   private ProfileCandidateUseCase profileCandidateUseCase;
+
+  @Autowired
+  private ListJobsByFilterUseCase listJobsByFilterUseCase;
 
   @PostMapping("")
   public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
@@ -49,6 +56,12 @@ public class CandidateController {
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
+
+  @GetMapping("/jobs")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  public List<JobEntity> findJobsByFilter(@RequestParam String filter) {
+    return this.listJobsByFilterUseCase.execute(filter);
   }
 
 }
