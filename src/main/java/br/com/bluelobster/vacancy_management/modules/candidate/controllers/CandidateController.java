@@ -69,7 +69,7 @@ public class CandidateController {
   @GetMapping("/jobs")
   @PreAuthorize("hasRole('CANDIDATE')")
   @Tag(name = "Candidate", description = "Candidates's informations")
-  @Operation(summary = "List jobs by filter", description = "This function return a list of jobs by filter")
+  @Operation(summary = "List jobs by filter", description = "This function return a list of available jobs by filter to an candidate")
   @SecurityRequirement(name = "jwt_auth")
   @ApiResponses({
     @ApiResponse(responseCode = "200", content = {
