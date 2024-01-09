@@ -18,6 +18,13 @@ import br.com.bluelobster.vacancy_management.modules.candidate.useCases.CreateCa
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ListJobsByFilterUseCase;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
 import br.com.bluelobster.vacancy_management.modules.company.entities.JobEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +67,13 @@ public class CandidateController {
 
   @GetMapping("/jobs")
   @PreAuthorize("hasRole('CANDIDATE')")
+  @Tag(name = "Candidate", description = "Candidates's informations")
+  @Operation(summary = "List jobs by filter", description = "This function return a list of jobs by filter")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", content = {
+      @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+    }),
+  })
   public List<JobEntity> findJobsByFilter(@RequestParam String filter) {
     return this.listJobsByFilterUseCase.execute(filter);
   }
