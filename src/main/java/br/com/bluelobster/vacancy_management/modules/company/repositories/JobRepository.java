@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.com.bluelobster.vacancy_management.modules.company.entities.JobEntity;
 
 public interface JobRepository extends JpaRepository<JobEntity, UUID> {
-    List<JobEntity> findByDescriptionContaining(String title);
+    List<JobEntity> findByDescriptionContainingIgnoreCase(String title);
 }
