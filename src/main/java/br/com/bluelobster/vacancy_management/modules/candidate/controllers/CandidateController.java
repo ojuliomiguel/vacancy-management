@@ -55,11 +55,20 @@ public class CandidateController {
 
   @GetMapping("")
   @PreAuthorize("hasRole('CANDIDATE')")
+  @Tag(name = "Candidate", description = "Candidates's informations")
+  @Operation(summary = "Candidate Profile", description = "This function return the candidate's profile")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", content = {
+      @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+    }),
+    @ApiResponse(responseCode = "400", description = "User not found")
+  })
+  @SecurityRequirement(name = "jwt_auth")
   public ResponseEntity<Object> get(HttpServletRequest request) {
     var idCandidate = request.getAttribute("candidate_id");
     try {
       var profile = this.profileCandidateUseCase
-        .execute(UUID.fromString(idCandidate.toString()));
+          .execute(UUID.fromString(idCandidate.toString()));
       return ResponseEntity.ok().body(profile);
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(e.getMessage());
@@ -72,9 +81,9 @@ public class CandidateController {
   @Operation(summary = "List jobs by filter", description = "This function return a list of available jobs by filter to an candidate")
   @SecurityRequirement(name = "jwt_auth")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", content = {
-      @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
-    }),
+      @ApiResponse(responseCode = "200", content = {
+          @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+      }),
   })
   public List<JobEntity> findJobsByFilter(@RequestParam String filter) {
     return this.listJobsByFilterUseCase.execute(filter);
