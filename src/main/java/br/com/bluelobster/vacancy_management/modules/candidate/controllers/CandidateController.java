@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/candidate")
+@Tag(name = "Candidate", description = "Candidates's informations")
 public class CandidateController {
 
   @Autowired
@@ -44,6 +45,13 @@ public class CandidateController {
   private ListJobsByFilterUseCase listJobsByFilterUseCase;
 
   @PostMapping("")
+  @Operation(summary = "Create Candidate ", description = "This function register a new candidate")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", content = {
+      @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+    }),
+    @ApiResponse(responseCode = "400", description = "User already exists")
+  })
   public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
     try {
       var candidate = this.createCanditateUseCase.execute(candidateEntity);
@@ -55,7 +63,6 @@ public class CandidateController {
 
   @GetMapping("")
   @PreAuthorize("hasRole('CANDIDATE')")
-  @Tag(name = "Candidate", description = "Candidates's informations")
   @Operation(summary = "Candidate Profile", description = "This function return the candidate's profile")
   @ApiResponses({
     @ApiResponse(responseCode = "200", content = {
@@ -77,7 +84,6 @@ public class CandidateController {
 
   @GetMapping("/jobs")
   @PreAuthorize("hasRole('CANDIDATE')")
-  @Tag(name = "Candidate", description = "Candidates's informations")
   @Operation(summary = "List jobs by filter", description = "This function return a list of available jobs by filter to an candidate")
   @SecurityRequirement(name = "jwt_auth")
   @ApiResponses({
