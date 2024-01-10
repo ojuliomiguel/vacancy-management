@@ -1,4 +1,4 @@
-package br.com.bluelobster.vacancy_management.modules.exceptions;
+package br.com.bluelobster.vacancy_management.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

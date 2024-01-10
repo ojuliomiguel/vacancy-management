@@ -1,4 +1,4 @@
-package br.com.bluelobster.vacancy_management.modules.provides;
+package br.com.bluelobster.vacancy_management.provides;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

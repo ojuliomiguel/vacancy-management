@@ -1,4 +1,4 @@
-package br.com.bluelobster.vacancy_management.modules.security;
+package br.com.bluelobster.vacancy_management.security;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.bluelobster.vacancy_management.modules.provides.JWTCandidateProvider;
+import br.com.bluelobster.vacancy_management.provides.JWTCandidateProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

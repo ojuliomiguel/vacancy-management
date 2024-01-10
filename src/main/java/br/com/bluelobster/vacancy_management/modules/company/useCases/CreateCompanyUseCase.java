@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.bluelobster.vacancy_management.exceptions.UserAlreadyExistsException;
 import br.com.bluelobster.vacancy_management.modules.company.entities.CompanyEntity;
 import br.com.bluelobster.vacancy_management.modules.company.repositories.CompanyRepository;
-import br.com.bluelobster.vacancy_management.modules.exceptions.UserAlreadyExistsException;
 
 @Service
 public class CreateCompanyUseCase {
