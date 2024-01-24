@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bluelobster.vacancy_management.modules.candidate.CandidateEntity;
+import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ApplyJobCandidateUseCase;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.CreateCanditateUseCase;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ListJobsByFilterUseCase;
 import br.com.bluelobster.vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
@@ -44,13 +45,16 @@ public class CandidateController {
   @Autowired
   private ListJobsByFilterUseCase listJobsByFilterUseCase;
 
+  @Autowired
+  private ApplyJobCandidateUseCase applyJobCandidateUseCase;
+
   @PostMapping("")
   @Operation(summary = "Create Candidate ", description = "This function register a new candidate")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", content = {
-      @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
-    }),
-    @ApiResponse(responseCode = "400", description = "User already exists")
+      @ApiResponse(responseCode = "200", content = {
+          @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+      }),
+      @ApiResponse(responseCode = "400", description = "User already exists")
   })
   public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
     try {
@@ -65,10 +69,10 @@ public class CandidateController {
   @PreAuthorize("hasRole('CANDIDATE')")
   @Operation(summary = "Candidate Profile", description = "This function return the candidate's profile")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", content = {
-      @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
-    }),
-    @ApiResponse(responseCode = "400", description = "User not found")
+      @ApiResponse(responseCode = "200", content = {
+          @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+      }),
+      @ApiResponse(responseCode = "400", description = "User not found")
   })
   @SecurityRequirement(name = "jwt_auth")
   public ResponseEntity<Object> get(HttpServletRequest request) {
@@ -93,6 +97,22 @@ public class CandidateController {
   })
   public List<JobEntity> findJobsByFilter(@RequestParam String filter) {
     return this.listJobsByFilterUseCase.execute(filter);
+  }
+
+  @PostMapping("job/apply")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  @Operation(summary = "Apply for a job", description = "This function apply for a job")
+  @SecurityRequirement(name = "jwt_auth")
+  public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob) {
+    var idCandidate = request.getAttribute("candidate_id");
+    var idCandidateUUID = UUID.fromString(idCandidate.toString());
+
+    try {
+      var result = this.applyJobCandidateUseCase.execute(idCandidateUUID, idJob);
+      return ResponseEntity.ok().body(result);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
 }
