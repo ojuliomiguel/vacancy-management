@@ -1,5 +1,7 @@
 package br.com.bluelobster.vacancy_management.modules.company.controllers;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.bluelobster.vacancy_management.modules.company.dto.CreateJobDTO;
 import br.com.bluelobster.vacancy_management.modules.company.entities.CompanyEntity;
+import br.com.bluelobster.vacancy_management.modules.company.entities.JobEntity;
 import br.com.bluelobster.vacancy_management.modules.company.helpers.CompanyJTWToken;
 import br.com.bluelobster.vacancy_management.modules.company.repositories.CompanyRepository;
+import br.com.bluelobster.vacancy_management.modules.company.repositories.JobRepository;
+
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class CreateJobControllerTest {
@@ -27,6 +32,9 @@ public class CreateJobControllerTest {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private JobRepository jobRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -47,33 +55,33 @@ public class CreateJobControllerTest {
 
         var company = CompanyEntity
             .builder()
-            .description("COMPANY_DESCRIPTION")
+            .description("We are looking for a Python Developer")
             .email("mail@companyxpto.com")
-            .password("12345678900111213777777777777")
-            .username("XPTO_COMPANY")
-            .name("XPTO")
+            .password("3beac352-3c72-4887-8593-722db355af96")
+            .username("companyXPTO")
+            .name("Company XPTO")
             .build();
 
         companyEntityDB = this.companyRepository.save(company);
 
         var token = CompanyJTWToken.generate(companyEntityDB.getId().toString());
-        
 
         var createdJobDTO = CreateJobDTO.builder()
-            .benefits("BENEFITS_TEST")
-            .level("LEVEL_TEST")
-            .description("DESCRIPTION_TEST")
+            .benefits("Gym card")
+            .level("junior")
+            .description("Python Developer")
             .build();
 
-        var result = mockMvc.perform(MockMvcRequestBuilders.post("/company/job")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/job")
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", token)
             .content(objectToJson(createdJobDTO)))
             .andExpect(MockMvcResultMatchers.status().isOk());
 
-        System.out.println(result);
 
-        //this.companyRepository.delete(companyEntityDB);
+        List<JobEntity> jobs = this.jobRepository.findByCompanyEntity(companyEntityDB);
+        this.jobRepository.deleteAll(jobs);
+        this.companyRepository.delete(companyEntityDB);
     }
 
     private static String objectToJson(Object obj) {
