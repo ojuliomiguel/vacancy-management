@@ -3,6 +3,7 @@ package br.com.bluelobster.vacancy_management.modules.company.controllers;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,16 +41,21 @@ public class JobController {
       @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
     }),
   })
-  public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
-    var companyId = request.getAttribute("company_id");
+  public ResponseEntity<Object> create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
+    try {
+      var companyId = request.getAttribute("company_id");
 
-    var jobEntity = JobEntity.builder()
-        .benefits(createJobDTO.getBenefits())
-        .companyId(UUID.fromString(companyId.toString()))
-        .description(createJobDTO.getDescription())
-        .level(createJobDTO.getLevel())
-        .build();
-    return this.createJobUseCase.execute(jobEntity);
+      var jobEntity = JobEntity.builder()
+          .benefits(createJobDTO.getBenefits())
+          .companyId(UUID.fromString(companyId.toString()))
+          .description(createJobDTO.getDescription())
+          .level(createJobDTO.getLevel())
+          .build();
+      var result = this.createJobUseCase.execute(jobEntity);
+      return ResponseEntity.ok().body(result);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
 }

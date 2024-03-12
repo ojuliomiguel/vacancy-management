@@ -1,5 +1,7 @@
 package br.com.bluelobster.vacancy_management.modules.company.controllers;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +72,23 @@ public class CreateJobControllerTest {
             .header("Authorization", token)
             .content(objectToJson(createdJobDTO)))
             .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void should_not_be_able_to_create_a_new_job_if_company_not_exists() throws Exception {
+
+        var createdJobDTO = CreateJobDTO.builder()
+            .benefits("Gym card")
+            .level("junior")
+            .description("Python Developer")
+            .build();
+        
+            mockMvc.perform(MockMvcRequestBuilders.post("/company/job")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", CompanyJTWToken.generate(UUID.randomUUID().toString()))
+            .content(objectToJson(createdJobDTO)))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
     }
 
     private static String objectToJson(Object obj) {
